@@ -29,5 +29,10 @@ def scrape():
 #creating the df with the corresponding column names
 
     df = pd.DataFrame(skins_info, columns=["Weapon type", "Skin", "Quality", "Collection"])
+    df["Factory New"] = ""
+    df["Minimal Wear"] = "" #create empty columns for all wear values for future use
+    df["Field-Tested"] = ""
+    df["Well-Worn"] = ""
+    df["Battle-Scarred"] = ""
     return(df) #we use return so that we can pass this variable to main
 #print(df) if used as a unit 

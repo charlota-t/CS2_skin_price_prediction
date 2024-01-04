@@ -9,4 +9,4 @@ import random
 df = scrape_fandom.scrape()  
 
 print(df)
-df.to_csv("allvalues.csv")
+df.to_csv("allvalues.csv", index=False)
