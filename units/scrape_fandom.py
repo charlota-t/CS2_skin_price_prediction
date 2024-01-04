@@ -27,7 +27,11 @@ def scrape():
                 weapon_type = columns[0].get_text(strip=True)
                 skins_info.append([weapon_type, skin_name, quality, current_collection])
 #creating the df with the corresponding column names
-
     df = pd.DataFrame(skins_info, columns=["Weapon type", "Skin", "Quality", "Collection"])
+    df["Factory New"] = ""
+    df["Minimal Wear"] = "" #create empty columns for all wear values for future use
+    df["Field-Tested"] = ""
+    df["Well-Worn"] = ""
+    df["Battle-Scarred"] = ""
     return(df) #we use return so that we can pass this variable to main
 #print(df) if used as a unit 
