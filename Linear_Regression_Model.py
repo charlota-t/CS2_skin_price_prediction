@@ -11,12 +11,18 @@ df = pd.read_csv(r'C:\Users\charl\Downloads\allvalues2.csv', sep = ';', on_bad_l
 #drop rows with NaN
 df = df.dropna()
 
-#add columns to df for weapon_type and quality to give a value to the names
+#add columns to df for weapon_type to give a value to the names
 df.Weapon_Type = pd.Categorical(df.Weapon_Type)
 df['Weapon_Code'] = df.Weapon_Type.cat.codes
 
-df.Quality = pd.Categorical(df.Quality)
-df['Quality_Code'] = df.Quality.cat.codes
+#add weights to the quality type, the less frequent, the rarer the quality
+count_quality = df['Quality'].count()
+value_count_quality = df['Quality'].value_counts()
+weights_quality = value_count_quality / count_quality 
+df['Weights'] = df['Quality'].map(weights_quality)
+
+#df.Quality = pd.Categorical(df.Quality)
+#df['Quality_Code'] = df.Quality.cat.codes
 
 #convert string to float
 price_as_float=[]
@@ -35,7 +41,7 @@ df['Factory_New'] = pd.DataFrame(data = price_as_float)
 df = df.dropna()
 
 #identify variables needed, with x(variables) and y(target)
-variables = ['Weapon_Code', 'Quality_Code']
+variables = ['Weapon_Code', 'Weights', 'Year']
 target = ['Factory_New']
 
 #assign values to identified variables
@@ -48,3 +54,6 @@ used_model = LinearRegression().fit(assigned_variables, assigned_target)
 #assign R^2 to check correlation
 r_sq = used_model.score(assigned_variables, assigned_target)
 print(f"R squared: {r_sq}")
+
+
+
