@@ -12,6 +12,6 @@ import json
 skins_info = scrape_fandom.scrape_fandom()  
 df = scrape_fandom.build_df(skins_info)
 
-df.to_csv("allvalues.csv", index=False)
+df.to_csv("utilities/allvalues.csv", index=False)
 
 ssp.read_all(df)

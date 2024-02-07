@@ -32,7 +32,7 @@ def scrape_fandom():
 
 def build_df(skins_info):
 # creating the df with the corresponding column names
-    with open('collection_dict.json') as json_file:
+    with open('utilities/collection_dict.json') as json_file:
         collections_years = json.load(json_file) 
     df = pd.DataFrame(skins_info, columns=["Weapon type", "Skin", "Quality", "Collection"])
     df["Factory New"] = np.NaN

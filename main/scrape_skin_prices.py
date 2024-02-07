@@ -11,6 +11,7 @@ def create_url(name_parts, weapon_parts): #creating a function to build the url 
     skin = '+'.join(name_parts)
     # Constructing the URL
     url = f"https://steamcommunity.com/market/search?category_730_ItemSet%5B%5D=any&category_730_ProPlayer%5B%5D=any&category_730_StickerCapsule%5B%5D=any&category_730_TournamentTeam%5B%5D=any&category_730_Weapon%5B%5D=any&category_730_Quality%5B%5D=tag_normal&appid=730&q={weapon}+%7C+{skin}"
+    print(url)
     return url
 
 def read_line_and_create_url(df, i):
@@ -68,7 +69,7 @@ def read_soup_and_build_df(soup,df,i):
     return df
 
 def read_all(df):
-    with open("proxy_list_final.txt", "r") as f: # reading a list of proxies obtained fron a website
+    with open("utilities/proxy_list_final.txt", "r") as f: # reading a list of proxies obtained fron a website
         proxies = f.read().split("\n")
     counter = 0  # creating a counter for purpouse of rotating proxies
     for i in range(0,len(df)):
@@ -79,5 +80,5 @@ def read_all(df):
         
         read_soup_and_build_df(soup,df,i)
         
-        df.to_csv("allvalues.csv", index=False)
+        df.to_csv("utilities/allvalues.csv", index=False)
         time.sleep(random.uniform(9,10)) #wait 9 to 10 seconds due to request rate limiter on steam market 
