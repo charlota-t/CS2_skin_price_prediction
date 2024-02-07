@@ -6,7 +6,6 @@ import sklearn
 import sklearn.datasets
 from sklearn.linear_model import LinearRegression
 
-
 #convert string to float
 def convert_string(df, price_version): 
     price_as_float=[]
@@ -23,9 +22,12 @@ def convert_string(df, price_version):
     return df 
 
 
-def predict_value(df, weapon, quality, year):
+def predict_price_value(df, price_version, weapon, quality, year):
+    
+    convert_string(df, price_version)
+    
     # select rows with desired weapon 
-    df_weapon = df.loc[df['Weapon_Type']] == weapon
+    df_weapon = df.loc[df['Weapon type']] == weapon
     df_weapon.reset_index(drop = True)
 
     # test if there is a match with weapon type
@@ -33,7 +35,7 @@ def predict_value(df, weapon, quality, year):
         return 0, False
     
     # create a pivot table with weapon, quality and year 
-    pivot = pd.pivot_table(df_weapon, values="Factory_New", index="Quality", columns="Year", aggfunc="mean", fill_value=0)
+    pivot = pd.pivot_table(df_weapon, values="Factory New", index="Quality", columns="Year", aggfunc="mean", fill_value=0)
 
     # find the column names of the data frame
     col = (pivot.iloc[:,0])
@@ -75,12 +77,9 @@ def predict_value(df, weapon, quality, year):
         return y_pred, isOk
 
 df = pd.read_csv(r'C:\Users\charl\Downloads\allvalues2.csv', sep = ';', on_bad_lines= 'skip')
-df = df.dropna()
 
-convert_string(df, 'Factory_New')
 # remove all store nan values
 df = df.dropna()
-
 df.reset_index(drop=True)
 
-predict_value(df, 'R8 Revolver', 'Consumer Grade', 2024)
+predict_price_value(df, 'Factory New', 'R8 Revolver', 'Consumer Grade', 2024)
