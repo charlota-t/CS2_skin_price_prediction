@@ -7,7 +7,7 @@ import sklearn.datasets
 from sklearn import tree
 from sklearn.model_selection import train_test_split
 
-df = pd.read_csv(r'C:\Users\charl\Downloads\allvalues2.csv', sep = ';', on_bad_lines= 'skip')
+df = pd.read_csv(r"utilities/allvalues.csv", sep = ';', on_bad_lines= 'skip')
 
 #add weights to the quality type, the less frequent, the rarer the quality
 count_quality = df['Quality'].count()
