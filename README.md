@@ -16,12 +16,12 @@
 ## About The Project
 
 This project aims to scrape skin prices from the Steam community market and then predict 
-skin prices on the obtained data.
+skin prices from the obtained data.
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p
 
-### Prerequisites
+## Prerequisites
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
