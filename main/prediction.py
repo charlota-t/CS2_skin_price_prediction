@@ -57,7 +57,7 @@ def predict_price_value(df, price_version, weapon, quality, year):
     # find the column index which equals the selected column, if not found return -1
     i_found = -1
     for i in range(col_keys.size):
-        if(col_keys[0] == quality):
+        if(col_keys[i] == quality):
             i_found = i
             
     # if there is a column, start regression
