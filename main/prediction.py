@@ -23,17 +23,17 @@ def convert_string(df, price_version):
     df[price_version] = pd.DataFrame(data = price_as_float)
     return df 
 
-def predict_price_value(df, price_version, weapon, quality, year):
+def create_pivot_table(df, price_version, weapon, quality):
 
-    # set default predicted price 
-    y_pred = 0
-
-    # create local copy
+    # create local copy and drop NaN values
     df_local = df.copy()
-    
-    # convert strings
-    df_local = df.dropna()
+    df_local = df_local.dropna()
+
     convert_string(df_local, price_version)
+
+    # remove all store nan values
+    df_local = df_local.dropna()
+    df_local.reset_index(drop=True)
     
     # select rows with desired weapon 
     df_weapon = df_local.loc[df_local['Weapon type'] == weapon]
@@ -44,20 +44,27 @@ def predict_price_value(df, price_version, weapon, quality, year):
         return y_pred, False
     
     # create a pivot table with weapon, quality and year 
+    quality_name_in_pivot = quality
     if(quality == 'All'):
         pivot = pd.pivot_table(df_weapon, values = price_version, index = None, columns = "Year", aggfunc = "mean", fill_value = 0)
-        quality = price_version
+        quality_name_in_pivot = price_version
     else:    
         pivot = pd.pivot_table(df_weapon, values = price_version, index = "Quality", columns = "Year", aggfunc = "mean", fill_value = 0)
+
+    return pivot, quality_name_in_pivot
+
+def predict_y(df, price_version, weapon, quality, year):
+    y_pred = 0
+    pivot, quality_name_in_pivot = create_pivot_table(df, price_version, weapon, quality)
 
     # find the column names of the data frame
     col = (pivot.iloc[:,0])
     col_keys = col.keys()
-    
+
     # find the column index which equals the selected column, if not found return -1
     i_found = -1
     for i in range(col_keys.size):
-        if(col_keys[i] == quality):
+        if(col_keys[i] == quality_name_in_pivot):
             i_found = i
             
     # if there is a column, start regression
@@ -65,14 +72,9 @@ def predict_price_value(df, price_version, weapon, quality, year):
         # find the year names in the pivot table
         row = (pivot.iloc[i_found])  
         row_keys = row.keys()
-
-    # Convert the row with year into an array 
+ 
         x = np.asarray(row_keys)
-
-    # Reshape row to column (transpose)
-        x = x.reshape(-1,1) 
-
-    # Convert the row with the values to an array        
+        x = x.reshape(-1,1)        
         y = row.to_numpy()
 
     # Define the model and fit it with x & y
@@ -81,26 +83,30 @@ def predict_price_value(df, price_version, weapon, quality, year):
     # Predict the value for the year specified
         y_pred = model.intercept_ + model.coef_ * year
 
-    # test if we have a valid result
-    isOk = True
+    # test if there is a valid result
+    is_ok = True
     if i_found == -1 or y_pred < 0:
-        isOk = False
-
-    # For testing only
-    print('Weapon type: ', weapon)
-    print('Quality; ', quality)
-    if(isOk):
-        print('Predicted price: ', y_pred)
-    else:
-        print('No prediction possible')
+        is_ok = False
 
     # return value and if we have a valid result
-    return y_pred, isOk
+    return y_pred, is_ok
 
-df = pd.read_csv(r'C:\Users\charl\Downloads\allvalues2.csv', sep = ';', on_bad_lines= 'skip')
+def print_prediction(df, weapon, quality, year):
+    column_name = list(df)
+    # print price for all 5 different prices 
+    for column in column_name[4:]:
+        if column != 'Year':
+            y_pred, is_ok = predict_y(df, column, weapon, quality, year)
+            print(f'For the {column} price, weapon type {weapon} and quality {quality},')
+            if(is_ok): # check if there is a valid result
+                print(f'the predicted price for year {year} is: ', y_pred)
+            else:
+                print('there is no prediction possible')
+        else:
+            break 
 
-predicted_price, isOk=predict_price_value(df, 'Factory New', 'AK-47', 'All', 2024)
+df = pd.read_csv(main/utilities/allvalues.csv, sep = ';', on_bad_lines= 'skip')
 
-predicted_price, isOk=predict_price_value(df, 'Factory New', 'AK-47', 'Consumer Grade', 2024)
+print_prediction(df, 'USP-S', 'All', 2024)
 
-predicted_price, isOk=predict_price_value(df, 'Factory New', 'AK-47', 'Classified', 2024)
+
