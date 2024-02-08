@@ -6,7 +6,8 @@ import sklearn
 import sklearn.datasets
 from sklearn.linear_model import LinearRegression
 
-pd.options.mode.chained_assignment = None  # default = 'warn'
+# default = 'warn'
+pd.options.mode.chained_assignment = None  
 
 #convert string to float
 def convert_string(df, price_version): 
@@ -23,7 +24,7 @@ def convert_string(df, price_version):
     df[price_version] = pd.DataFrame(data = price_as_float)
     return df 
 
-def create_pivot_table(df, price_version, weapon, quality):
+def create_pivot_table(price_version, weapon, quality):
 
     # create local copy and drop NaN values
     df_local = df.copy()
@@ -53,9 +54,9 @@ def create_pivot_table(df, price_version, weapon, quality):
 
     return pivot, quality_name_in_pivot
 
-def predict_y(df, price_version, weapon, quality, year):
+def predict_y(price_version, weapon, quality, year):
     y_pred = 0
-    pivot, quality_name_in_pivot = create_pivot_table(df, price_version, weapon, quality)
+    pivot, quality_name_in_pivot = create_pivot_table(price_version, weapon, quality)
 
     # find the column names of the data frame
     col = (pivot.iloc[:,0])
@@ -72,14 +73,13 @@ def predict_y(df, price_version, weapon, quality, year):
         # find the year names in the pivot table
         row = (pivot.iloc[i_found])  
         row_keys = row.keys()
- 
         x = np.asarray(row_keys)
         x = x.reshape(-1,1)        
         y = row.to_numpy()
 
     # Define the model and fit it with x & y
         model = LinearRegression().fit(x, y)
-
+        
     # Predict the value for the year specified
         y_pred = model.intercept_ + model.coef_ * year
 
@@ -91,22 +91,19 @@ def predict_y(df, price_version, weapon, quality, year):
     # return value and if we have a valid result
     return y_pred, is_ok
 
-def print_prediction(df, weapon, quality, year):
+def print_prediction(weapon, quality, year):
     column_name = list(df)
     # print price for all 5 different prices 
     for column in column_name[4:]:
         if column != 'Year':
-            y_pred, is_ok = predict_y(df, column, weapon, quality, year)
-            print(f'For the {column} price, weapon type {weapon} and quality {quality},')
+            y_pred, is_ok = predict_y(column, weapon, quality, year)
+            y_pred = round(float(y_pred),2)
+            print(f'\nFor the {column} price, weapon type {weapon} and quality {quality},')
             if(is_ok): # check if there is a valid result
-                print(f'the predicted price for year {year} is: ', y_pred)
+                print(f'the predicted price for year {year} is: €', y_pred)
             else:
                 print('there is no prediction possible')
         else:
             break 
 
 df = pd.read_csv(main/utilities/allvalues.csv, sep = ';', on_bad_lines= 'skip')
-
-print_prediction(df, 'USP-S', 'All', 2024)
-
-
