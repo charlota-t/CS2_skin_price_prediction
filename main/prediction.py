@@ -106,4 +106,4 @@ def print_prediction(weapon, quality, year):
         else:
             break 
 
-df = pd.read_csv(main/utilities/allvalues.csv, sep = ';', on_bad_lines= 'skip')
+df = pd.read_csv(utilities/allvalues.csv)
