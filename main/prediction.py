@@ -107,3 +107,5 @@ def print_prediction(weapon, quality, year):
                 print('there is no prediction possible')
         else:
             break 
+
+df = pd.read_csv("utilities/allvalues.csv")
