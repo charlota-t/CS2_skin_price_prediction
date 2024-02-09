@@ -107,11 +107,3 @@ def print_prediction(weapon, quality, year):
                 print('there is no prediction possible')
         else:
             break 
-
-df = pd.read_csv(r'C:\Users\charl\Downloads\allvalues2.csv', sep = ';', on_bad_lines= 'skip')
-
-print_prediction('R8 Revolver', 'Industrial Grade', 2024)
-
-
-
-
