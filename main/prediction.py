@@ -93,17 +93,25 @@ def predict_y(price_version, weapon, quality, year):
 
 def print_prediction(weapon, quality, year):
     column_name = list(df)
+    y_str_pred = ''
     # print price for all 5 different prices 
     for column in column_name[4:]:
         if column != 'Year':
             y_pred, is_ok = predict_y(column, weapon, quality, year)
-            y_pred = round(float(y_pred),2)
+            for y in y_pred: # convert to string, float and round
+                y_str_pred = round(float(y), 2)
             print(f'\nFor the {column} price, weapon type {weapon} and quality {quality},')
             if(is_ok): # check if there is a valid result
-                print(f'the predicted price for year {year} is: €', y_pred)
+                print(f'the predicted price for year {year} is: €', y_str_pred)
             else:
                 print('there is no prediction possible')
         else:
             break 
 
-df = pd.read_csv("utilities/allvalues.csv")
+df = pd.read_csv(r'C:\Users\charl\Downloads\allvalues2.csv', sep = ';', on_bad_lines= 'skip')
+
+print_prediction('R8 Revolver', 'Industrial Grade', 2024)
+
+
+
+
