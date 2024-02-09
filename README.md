@@ -21,7 +21,7 @@ skin prices from the obtained data.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p
 
-## Prerequisities
+## Prerequisites
 
 All the required packages can be obtained by running pip install -r requirements.txt.
 
